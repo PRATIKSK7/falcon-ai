@@ -353,11 +353,6 @@ DATABASE_URL=sqlite+aiosqlite:///./stampede.db
 ## 🖼️ 17. SCREENSHOTS
 
 <div align="center">
-  <img src="docs/assets/pa_image.jpeg" width="800" alt="FALCON AI Main Dashboard" />
-  <p><i>Live Command Center Interface</i></p>
-
-  <br/>
-  
   <img src="docs/assets/dashboard_1.png" width="800" alt="Command Center Dashboard" />
   <p><i>Command Center Detail View</i></p>
   
@@ -370,6 +365,11 @@ DATABASE_URL=sqlite+aiosqlite:///./stampede.db
   
   <img src="docs/assets/dashboard_3.png" width="800" alt="Incidents Details" />
   <p><i>Historical Incident Analytics</i></p>
+  
+  <br/>
+  
+  <img src="docs/assets/pa_image.jpeg" width="800" alt="FALCON AI Main Dashboard" />
+  <p><i>Live Command Center Interface</i></p>
 </div>
 
 ---
