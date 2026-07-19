@@ -231,20 +231,20 @@ def process_video_stream(video_path):
 ```mermaid
 sequenceDiagram
     participant Operator
-    participant React Frontend
-    participant FastAPI Backend
-    participant OpenCV + TensorFlow
+    participant UI as React Frontend
+    participant API as FastAPI Backend
+    participant Engine as OpenCV & TensorFlow
     participant Twilio
     
-    Operator->>React Frontend: Upload Video / Start Stream
-    React Frontend->>FastAPI Backend: POST /api/v1/ai/predict_stream
-    FastAPI Backend->>OpenCV + TensorFlow: Initialize async video processing
+    Operator->>UI: Upload Video / Start Stream
+    UI->>API: POST /api/v1/ai/predict_stream
+    API->>Engine: Initialize async video processing
     loop Every Frame
-        OpenCV + TensorFlow->>FastAPI Backend: Yield Frame Metrics (MSE)
-        FastAPI Backend-->>React Frontend: SSE Stream (data: JSON)
+        Engine->>API: Yield Frame Metrics (MSE)
+        API-->>UI: SSE Stream (data: JSON)
     end
-    OpenCV + TensorFlow->>OpenCV + TensorFlow: MSE > Threshold!
-    OpenCV + TensorFlow->>Twilio: POST /Calls (Inline TwiML)
+    Engine->>Engine: MSE > Threshold!
+    Engine->>Twilio: POST /Calls (Inline TwiML)
     Twilio-->>Operator: Incoming Voice Call!
 ```
 
