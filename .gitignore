@@ -1,0 +1,25 @@
+# Environment
+.env
+.env.*
+venv/
+env/
+__pycache__/
+*.pyc
+
+# Data & Models
+/backend/storage/
+*.pth
+*.pt
+*.tar
+*.onnx
+
+# Node
+node_modules/
+.next/
+out/
+build/
+dist/
+
+# OS Files
+.DS_Store
+Thumbs.db
