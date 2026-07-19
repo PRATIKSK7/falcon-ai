@@ -353,8 +353,13 @@ DATABASE_URL=sqlite+aiosqlite:///./stampede.db
 ## 🖼️ 17. SCREENSHOTS
 
 <div align="center">
-  <img src="docs/assets/dashboard_1.png" width="800" alt="Command Center Dashboard" />
+  <img src="docs/assets/pa_image.jpeg" width="800" alt="FALCON AI Main Dashboard" />
   <p><i>Live Command Center Interface</i></p>
+
+  <br/>
+  
+  <img src="docs/assets/dashboard_1.png" width="800" alt="Command Center Dashboard" />
+  <p><i>Command Center Detail View</i></p>
   
   <br/>
   
@@ -426,17 +431,15 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 
 ---
 
-## 📬 24. CONTACT
-
-<div align="center">
-  <img src="docs/assets/pa_image.jpeg" width="120" style="border-radius: 50%; object-fit: cover;" alt="Pratik S Kanoj" />
-</div>
+## 📬 24. AUTHOR & CONTACT
 
 **Pratik S Kanoj**  
-Senior Software Engineer / AI Architect  
+*Senior Software Engineer / AI Architect*
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://linkedin.com/in/)
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/)
+I am a passionate software engineer specializing in building intelligent, scalable, and high-performance AI platforms. I thrive on solving complex engineering problems and delivering enterprise-grade solutions.
+
+[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pratik-s-kanoj-b8258525b/)
+[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/PRATIKSK7)
 
 ---
 
