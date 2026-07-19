@@ -20,7 +20,7 @@
 
 <br />
 
-![Falcon AI Command Center](/docs/assets/hero_placeholder.png)
+![Falcon AI Command Center](docs/assets/hero_banner.png)
 
 </div>
 
@@ -353,13 +353,18 @@ DATABASE_URL=sqlite+aiosqlite:///./stampede.db
 ## 🖼️ 17. SCREENSHOTS
 
 <div align="center">
-  <img src="/docs/assets/dashboard_placeholder.png" width="800" alt="Command Center Dashboard" />
+  <img src="docs/assets/dashboard_1.png" width="800" alt="Command Center Dashboard" />
   <p><i>Live Command Center Interface</i></p>
   
   <br/>
   
-  <img src="/docs/assets/detection_placeholder.png" width="800" alt="Stampede Detection" />
+  <img src="docs/assets/dashboard_2.png" width="800" alt="Stampede Detection" />
   <p><i>Real-time Anomaly Threshold Breach</i></p>
+
+  <br/>
+  
+  <img src="docs/assets/dashboard_3.png" width="800" alt="Incidents Details" />
+  <p><i>Historical Incident Analytics</i></p>
 </div>
 
 ---
@@ -422,6 +427,10 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 ---
 
 ## 📬 24. CONTACT
+
+<div align="center">
+  <img src="docs/assets/pa_image.jpeg" width="120" style="border-radius: 50%; object-fit: cover;" alt="Pratik S Kanoj" />
+</div>
 
 **Pratik S Kanoj**  
 Senior Software Engineer / AI Architect  
