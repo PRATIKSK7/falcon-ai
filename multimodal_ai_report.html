@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>AI-Powered Multimodal Product Understanding</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        
+        :root {
+            --primary: #2563EB;
+            --secondary: #60A5FA;
+            --bg-light: #EFF6FF;
+            --text-dark: #0F172A;
+            --text-muted: #64748B;
+            --gray-light: #F8FAFC;
+            --white: #FFFFFF;
+            --border: #E5E7EB;
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-dark);
+            background-color: #f1f5f9;
+            -webkit-font-smoothing: antialiased;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .page {
+            width: 210mm;
+            height: 297mm;
+            margin: 20px auto;
+            background: var(--white);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 20mm 20mm 28mm 20mm; /* Extra bottom padding to protect footer */
+            position: relative;
+            overflow: hidden;
+            page-break-after: always;
+            display: flex;
+            flex-direction: column;
+        }
+
+        @page { size: A4; margin: 0; }
+        @media print {
+            body { background: var(--white); }
+            .page { margin: 0; box-shadow: none; padding: 20mm 20mm 28mm 20mm; }
+        }
+
+        .page-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 24px; /* Consistent 24px section spacing */
+        }
+
+        /* Typography */
+        h1 { font-size: 28px; font-weight: 700; color: var(--text-dark); letter-spacing: -0.02em; line-height: 1.2; margin-bottom: 4px; }
+        h2 { font-size: 18px; font-weight: 600; color: var(--text-dark); letter-spacing: -0.01em; margin-bottom: 16px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        .subtitle { font-size: 18px; color: var(--text-muted); font-weight: 400; margin-bottom: 4px; }
+        p { color: var(--text-muted); line-height: 1.6; }
+
+        /* Icons */
+        .icon { width: 22px; height: 22px; stroke: var(--primary); stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+        .icon-sm { width: 18px; height: 18px; }
+        .icon-lg { width: 28px; height: 28px; }
+
+        /* Grids */
+        .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; align-items: stretch; }
+        .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 24px; align-items: stretch; }
+        .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; align-items: stretch; }
+
+        /* Cards */
+        .card { 
+            background: var(--gray-light); 
+            border: 1px solid var(--border); 
+            border-radius: 16px; 
+            padding: 20px; 
+            box-shadow: 0 4px 12px rgba(15,23,42,.05);
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+        .card-premium {
+            background: var(--white);
+            border-top: 3px solid var(--primary);
+        }
+        .card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+        .card-title { font-weight: 700; font-size: 15px; color: var(--text-dark); }
+        .card-body { font-size: 13.5px; color: var(--text-muted); line-height: 1.6; flex-grow: 1; }
+
+        /* IO Container */
+        .io-container { display: flex; align-items: center; justify-content: space-between; background: var(--gray-light); padding: 20px; border-radius: 16px; border: 1px solid var(--border); box-shadow: 0 4px 12px rgba(15,23,42,.05); height: 100%; }
+        .io-box { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 16px; background: var(--white); border-radius: 12px; border: 1px solid var(--border); width: 120px; text-align: center; font-size: 13px; font-weight: 700; box-shadow: 0 4px 12px rgba(15,23,42,.05); }
+        .io-arrow { color: var(--primary); display: flex; align-items: center; }
+        .io-results { display: flex; flex-direction: column; gap: 12px; flex: 1; margin-left: 20px; }
+        .tag { background: var(--bg-light); color: var(--primary); font-size: 13px; font-weight: 600; padding: 10px 14px; border-radius: 8px; display: flex; align-items: center; gap: 8px; border: 1px solid #dbeafe; }
+
+        /* Compare Cards */
+        .compare-row { display: flex; align-items: center; gap: 12px; font-size: 13.5px; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid var(--border); }
+        .compare-row:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+        .compare-label { font-weight: 700; color: var(--text-dark); width: 85px; flex-shrink: 0;}
+        .compare-val { color: var(--text-muted); }
+
+        /* Diagram Container */
+        .diagram-box {
+            width: 100%;
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 4px 12px rgba(15,23,42,.05);
+        }
+
+        /* KPI Cards */
+        .kpi-card { background: var(--white); border: 1px solid var(--border); border-radius: 16px; padding: 24px 20px; text-align: center; box-shadow: 0 4px 12px rgba(15,23,42,.05); display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100%; }
+        .kpi-value { font-size: 28px; font-weight: 700; color: var(--primary); margin-bottom: 6px; letter-spacing: -0.02em;}
+        .kpi-label { font-size: 13px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+
+        /* Callout */
+        .callout { background: var(--bg-light); border-left: 4px solid var(--primary); padding: 20px; border-radius: 0 16px 16px 0; margin-top: 8px; box-shadow: 0 4px 12px rgba(15,23,42,.05); }
+        .callout-title { font-weight: 700; color: var(--primary); font-size: 16px; margin-bottom: 8px; }
+        .callout-text { font-size: 14px; color: var(--text-dark); line-height: 1.6; }
+
+        /* Layout Utilities */
+        section { display: flex; flex-direction: column; }
+        .flex-center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; height: 100%; }
+
+        /* Pinned Footer */
+        .footer { 
+            position: absolute; 
+            bottom: 16mm; 
+            left: 20mm; 
+            right: 20mm; 
+            border-top: 1px solid var(--border); 
+            padding-top: 16px; 
+            display: flex; 
+            justify-content: space-between; 
+            font-size: 12px; 
+            font-weight: 500;
+            color: var(--text-muted); 
+            background: transparent;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- PAGE 1 -->
+    <div class="page">
+        <div class="page-content">
+            <header>
+                <h1>AI-Powered Multimodal Product Understanding System</h1>
+                <div class="subtitle">Enterprise High-Level Architecture for E-Commerce</div>
+            </header>
+
+            <!-- Executive Summary -->
+            <section>
+                <div class="grid-3">
+                    <div class="card card-premium">
+                        <div class="card-header">
+                            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+                            <div class="card-title">Problem</div>
+                        </div>
+                        <div class="card-body">Manual product cataloging is slow, expensive, and error-prone. Incomplete metadata severely degrades search relevance and user conversion rates.</div>
+                    </div>
+                    <div class="card card-premium">
+                        <div class="card-header">
+                            <svg class="icon" viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+                            <div class="card-title">Solution</div>
+                        </div>
+                        <div class="card-body">An automated, fully scalable multimodal architecture using Vision Encoders and LLMs to instantly comprehend products directly from raw imagery.</div>
+                    </div>
+                    <div class="card card-premium">
+                        <div class="card-header">
+                            <svg class="icon" viewBox="0 0 24 24"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline><polyline points="17 6 23 6 23 12"></polyline></svg>
+                            <div class="card-title">Impact</div>
+                        </div>
+                        <div class="card-body">Reduces cataloging overhead by 90% while enriching SEO data, significantly accelerating product time-to-market and lowering OpEx.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Inputs & Outputs and Model Selection -->
+            <section>
+                <div class="grid-2">
+                    <div>
+                        <h2>
+                            <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                            Inputs & Outputs
+                        </h2>
+                        <div class="io-container">
+                            <div class="io-box">
+                                <svg class="icon icon-lg" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                                Product Image
+                            </div>
+                            <div class="io-arrow">
+                                <svg class="icon" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                            </div>
+                            <div class="io-results">
+                                <div class="tag"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg> Category</div>
+                                <div class="tag"><svg class="icon icon-sm" viewBox="0 0 24 24"><line x1="17" y1="10" x2="3" y2="10"></line><line x1="21" y1="6" x2="3" y2="6"></line><line x1="21" y1="14" x2="8" y2="14"></line><line x1="17" y1="18" x2="3" y2="18"></line></svg> Description</div>
+                                <div class="tag"><svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg> Confidence</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <h2>
+                            <svg class="icon" viewBox="0 0 24 24"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+                            Model Selection
+                        </h2>
+                        <div class="grid-2" style="gap: 20px; height: calc(100% - 46px);">
+                            <div class="card">
+                                <div class="card-title" style="color: var(--primary); margin-bottom: 16px; font-size: 16px;">CLIP</div>
+                                <div class="compare-row"><div class="compare-label">Purpose</div><div class="compare-val">Visual Encoder</div></div>
+                                <div class="compare-row"><div class="compare-label">Advantage</div><div class="compare-val">Zero-shot feature extraction</div></div>
+                            </div>
+                            <div class="card">
+                                <div class="card-title" style="color: var(--primary); margin-bottom: 16px; font-size: 16px;">BLIP-2</div>
+                                <div class="compare-row"><div class="compare-label">Purpose</div><div class="compare-val">Language Gen</div></div>
+                                <div class="compare-row"><div class="compare-label">Advantage</div><div class="compare-val">Contextual text fluency</div></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Huge Architecture SVG -->
+            <section style="flex-grow: 1; display: flex; flex-direction: column;">
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+                    System Architecture
+                </h2>
+                <div class="diagram-box" style="flex-grow: 1;">
+                    <svg width="100%" height="100%" viewBox="0 0 960 360" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="arrowHead" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                                <path d="M0,0 L0,10 L10,5 z" fill="#60A5FA" />
+                            </marker>
+                            <filter id="dropShadow" x="-10%" y="-10%" width="120%" height="120%">
+                                <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#0F172A" flood-opacity="0.05"/>
+                            </filter>
+                            <style>
+                                .node-bg { fill: #FFFFFF; stroke: #E5E7EB; stroke-width: 1.5; filter: url(#dropShadow); rx: 12; }
+                                .node-text { font-family: 'Inter', sans-serif; font-size: 13.5px; font-weight: 700; fill: #0F172A; text-anchor: start; }
+                                .node-sub { font-family: 'Inter', sans-serif; font-size: 11.5px; fill: #64748B; text-anchor: start; }
+                                .edge { stroke: #60A5FA; stroke-width: 2.5; fill: none; marker-end: url(#arrowHead); }
+                                .zone-bg { fill: #F8FAFC; stroke: #CBD5E1; stroke-dasharray: 6 4; stroke-width: 1.5; rx: 16; }
+                                .zone-title { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; fill: #64748B; text-transform: uppercase; letter-spacing: 1px; text-anchor: middle; }
+                                .node-icon { stroke: #2563EB; stroke-width: 2; fill: none; stroke-linecap: round; stroke-linejoin: round; }
+                            </style>
+                        </defs>
+
+                        <!-- Zones -->
+                        <rect class="zone-bg" x="40" y="25" width="260" height="310" />
+                        <text class="zone-title" x="170" y="50">Ingestion & Preprocessing</text>
+
+                        <rect class="zone-bg" x="350" y="25" width="260" height="310" />
+                        <text class="zone-title" x="480" y="50">Multimodal AI Core</text>
+
+                        <rect class="zone-bg" x="660" y="25" width="260" height="310" />
+                        <text class="zone-title" x="790" y="50">Data & Presentation</text>
+
+                        <!-- Col 1 -->
+                        <g transform="translate(90, 70)">
+                            <rect class="node-bg" width="160" height="65" />
+                            <svg x="18" y="20" width="24" height="24" class="node-icon"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                            <text class="node-text" x="54" y="32">User Uploads</text>
+                            <text class="node-sub" x="54" y="50">Image File</text>
+                        </g>
+                        <g transform="translate(90, 165)">
+                            <rect class="node-bg" width="160" height="65" />
+                            <svg x="18" y="20" width="24" height="24" class="node-icon"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                            <text class="node-text" x="54" y="32">Image Validation</text>
+                            <text class="node-sub" x="54" y="50">Schema Check</text>
+                        </g>
+                        <g transform="translate(90, 260)">
+                            <rect class="node-bg" width="160" height="65" />
+                            <svg x="18" y="20" width="24" height="24" class="node-icon"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                            <text class="node-text" x="54" y="32">Preprocessing</text>
+                            <text class="node-sub" x="54" y="50">Resize &amp; Normalize</text>
+                        </g>
+
+                        <!-- Col 2 -->
+                        <g transform="translate(400, 70)">
+                            <rect class="node-bg" width="160" height="65" style="stroke: #2563EB; stroke-width: 2;" />
+                            <svg x="18" y="20" width="24" height="24" class="node-icon"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                            <text class="node-text" x="54" y="32">CLIP</text>
+                            <text class="node-sub" x="54" y="50">Visual Encoder</text>
+                        </g>
+                        <g transform="translate(400, 165)">
+                            <rect class="node-bg" width="160" height="65" style="fill: #EFF6FF; stroke: #60A5FA;" />
+                            <svg x="18" y="20" width="24" height="24" class="node-icon"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="14" y1="10" x2="21" y2="3"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                            <text class="node-text" x="54" y="32">Image Embeddings</text>
+                            <text class="node-sub" x="54" y="50">Vector Representation</text>
+                        </g>
+                        <g transform="translate(400, 260)">
+                            <rect class="node-bg" width="160" height="65" style="stroke: #2563EB; stroke-width: 2;" />
+                            <svg x="18" y="20" width="24" height="24" class="node-icon"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><line x1="9" y1="10" x2="15" y2="10"/><line x1="9" y1="14" x2="13" y2="14"/></svg>
+                            <text class="node-text" x="54" y="32">BLIP-2</text>
+                            <text class="node-sub" x="54" y="50">Language Generator</text>
+                        </g>
+
+                        <!-- Col 3 -->
+                        <g transform="translate(710, 70)">
+                            <rect class="node-bg" width="160" height="65" style="fill: #EFF6FF; stroke: #60A5FA;" />
+                            <svg x="18" y="20" width="24" height="24" class="node-icon"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"/><line x1="7" y1="7" x2="7.01" y2="7"/></svg>
+                            <text class="node-text" x="54" y="32">Output Data</text>
+                            <text class="node-sub" x="54" y="50">Cat / Desc / Conf</text>
+                        </g>
+                        <g transform="translate(710, 165)">
+                            <rect class="node-bg" width="160" height="65" />
+                            <svg x="18" y="20" width="24" height="24" class="node-icon"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg>
+                            <text class="node-text" x="54" y="32">Database</text>
+                            <text class="node-sub" x="54" y="50">Structured JSON</text>
+                        </g>
+                        <g transform="translate(710, 260)">
+                            <rect class="node-bg" width="160" height="65" />
+                            <svg x="18" y="20" width="24" height="24" class="node-icon"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                            <text class="node-text" x="54" y="32">Web Application</text>
+                            <text class="node-sub" x="54" y="50">Display to User</text>
+                        </g>
+
+                        <!-- Perfect Edges -->
+                        <path class="edge" d="M 170 135 L 170 157" />
+                        <path class="edge" d="M 170 230 L 170 252" />
+                        
+                        <path class="edge" d="M 250 292.5 L 310 292.5 A 12 12 0 0 0 322 280.5 L 322 114.5 A 12 12 0 0 1 334 102.5 L 392 102.5" />
+                        
+                        <path class="edge" d="M 480 135 L 480 157" />
+                        <path class="edge" d="M 480 230 L 480 252" />
+                        
+                        <path class="edge" d="M 560 292.5 L 620 292.5 A 12 12 0 0 0 632 280.5 L 632 114.5 A 12 12 0 0 1 644 102.5 L 702 102.5" />
+                        
+                        <path class="edge" d="M 790 135 L 790 157" />
+                        <path class="edge" d="M 790 230 L 790 252" />
+                    </svg>
+                </div>
+            </section>
+        </div>
+
+        <div class="footer">
+            <span>AI-Powered Multimodal Product Understanding System</span>
+            <span>Page 1 of 2</span>
+        </div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page">
+        <div class="page-content">
+            <!-- Workflow Timeline -->
+            <section>
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                    System Workflow Timeline
+                </h2>
+                <div class="diagram-box" style="padding: 10px 0;">
+                    <svg width="100%" height="220" viewBox="0 0 800 220" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <marker id="tlArrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                                <path d="M0,0 L0,8 L8,4 z" fill="#CBD5E1" />
+                            </marker>
+                            <style>
+                                .tl-bg { fill: #FFFFFF; stroke: #2563EB; stroke-width: 2.5; }
+                                .tl-num { font-family: 'Inter', sans-serif; font-size: 15px; font-weight: 700; fill: #2563EB; text-anchor: middle; }
+                                .tl-text { font-family: 'Inter', sans-serif; font-size: 12.5px; font-weight: 700; fill: #0F172A; text-anchor: middle; }
+                                .tl-edge { stroke: #CBD5E1; stroke-width: 3; fill: none; marker-end: url(#tlArrow); }
+                            </style>
+                        </defs>
+                        
+                        <!-- Row 1 Edges -->
+                        <line x1="128" y1="70" x2="182" y2="70" class="tl-edge" />
+                        <line x1="248" y1="70" x2="302" y2="70" class="tl-edge" />
+                        <line x1="368" y1="70" x2="422" y2="70" class="tl-edge" />
+                        <line x1="488" y1="70" x2="542" y2="70" class="tl-edge" />
+                        <line x1="608" y1="70" x2="662" y2="70" class="tl-edge" />
+                        
+                        <!-- Down Edge -->
+                        <line x1="700" y1="98" x2="700" y2="142" class="tl-edge" />
+                        
+                        <!-- Row 2 Edges (Going left) -->
+                        <line x1="672" y1="170" x2="618" y2="170" class="tl-edge" />
+                        <line x1="552" y1="170" x2="498" y2="170" class="tl-edge" />
+                        <line x1="432" y1="170" x2="378" y2="170" class="tl-edge" />
+                        <line x1="312" y1="170" x2="258" y2="170" class="tl-edge" />
+                        <line x1="192" y1="170" x2="138" y2="170" class="tl-edge" />
+                        
+                        <!-- Row 1 Nodes -->
+                        <circle cx="100" cy="70" r="24" class="tl-bg" />
+                        <text x="100" y="75" class="tl-num">1</text>
+                        <text x="100" y="115" class="tl-text">Upload</text>
+
+                        <circle cx="220" cy="70" r="24" class="tl-bg" />
+                        <text x="220" y="75" class="tl-num">2</text>
+                        <text x="220" y="115" class="tl-text">Resize</text>
+
+                        <circle cx="340" cy="70" r="24" class="tl-bg" />
+                        <text x="340" y="75" class="tl-num">3</text>
+                        <text x="340" y="115" class="tl-text">Normalize</text>
+
+                        <circle cx="460" cy="70" r="24" class="tl-bg" />
+                        <text x="460" y="75" class="tl-num">4</text>
+                        <text x="460" y="115" class="tl-text">Extraction</text>
+
+                        <circle cx="580" cy="70" r="24" class="tl-bg" />
+                        <text x="580" y="75" class="tl-num">5</text>
+                        <text x="580" y="115" class="tl-text">CLIP</text>
+
+                        <circle cx="700" cy="70" r="24" class="tl-bg" />
+                        <text x="700" y="75" class="tl-num">6</text>
+                        <text x="700" y="115" class="tl-text">BLIP-2</text>
+
+                        <!-- Row 2 Nodes (Reversed order) -->
+                        <circle cx="700" cy="170" r="24" class="tl-bg" />
+                        <text x="700" y="175" class="tl-num">7</text>
+                        <text x="700" y="215" class="tl-text">Category</text>
+
+                        <circle cx="580" cy="170" r="24" class="tl-bg" />
+                        <text x="580" y="175" class="tl-num">8</text>
+                        <text x="580" y="215" class="tl-text">Description</text>
+
+                        <circle cx="460" cy="170" r="24" class="tl-bg" />
+                        <text x="460" y="175" class="tl-num">9</text>
+                        <text x="460" y="215" class="tl-text">Confidence</text>
+
+                        <circle cx="340" cy="170" r="24" class="tl-bg" />
+                        <text x="340" y="175" class="tl-num">10</text>
+                        <text x="340" y="215" class="tl-text">Store</text>
+
+                        <circle cx="220" cy="170" r="24" class="tl-bg" style="fill:#2563EB; stroke:#2563EB;" />
+                        <text x="220" y="175" class="tl-num" style="fill:#FFFFFF;">11</text>
+                        <text x="220" y="215" class="tl-text" style="fill:#2563EB;">Display</text>
+                    </svg>
+                </div>
+            </section>
+
+            <!-- Evaluation Metrics -->
+            <section>
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline></svg>
+                    System Evaluation Metrics
+                </h2>
+                <div class="grid-4">
+                    <div class="kpi-card">
+                        <div class="kpi-value">98.5%</div>
+                        <div class="kpi-label">Accuracy</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">120ms</div>
+                        <div class="kpi-label">Inference Time</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">0.86</div>
+                        <div class="kpi-label">BLEU Score</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-value">99.2%</div>
+                        <div class="kpi-label">Confidence</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Business Value -->
+            <section>
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24"><path d="M12 2v20"></path><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                    Business Value
+                </h2>
+                <div class="grid-4">
+                    <div class="card">
+                        <div class="card-header">
+                            <svg class="icon" viewBox="0 0 24 24"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                            <div class="card-title">Faster Listing</div>
+                        </div>
+                        <div class="card-body">Automated extraction dramatically reduces vendor onboarding delays.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <svg class="icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                            <div class="card-title">Better Search</div>
+                        </div>
+                        <div class="card-body">Rich textual descriptions exponentially increase organic relevance.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><path d="M8 14s1.5 2 4 2 4-2 4-2"></path><line x1="9" y1="9" x2="9.01" y2="9"></line><line x1="15" y1="9" x2="15.01" y2="9"></line></svg>
+                            <div class="card-title">Customer UX</div>
+                        </div>
+                        <div class="card-body">High-fidelity metadata enables accurate filtering and discovery.</div>
+                    </div>
+                    <div class="card">
+                        <div class="card-header">
+                            <svg class="icon" viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+                            <div class="card-title">Reduced Cost</div>
+                        </div>
+                        <div class="card-body">Drastically cuts outsourcing OpEx required for manual data entry.</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Real World Usage -->
+            <section>
+                <h2>
+                    <svg class="icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+                    Real World Usage
+                </h2>
+                <div class="grid-4">
+                    <div class="card">
+                        <div class="flex-center">
+                            <div class="card-title" style="margin-bottom: 8px; font-size: 16px;">Amazon</div>
+                            <div class="card-body">Powers visual product search within the Amazon Lens feature.</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="flex-center">
+                            <div class="card-title" style="margin-bottom: 8px; font-size: 16px;">Flipkart</div>
+                            <div class="card-body">Automates fashion cataloging and rich attribute tagging.</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="flex-center">
+                            <div class="card-title" style="margin-bottom: 8px; font-size: 16px;">Google Lens</div>
+                            <div class="card-body">Core architecture for billions of real-world image queries.</div>
+                        </div>
+                    </div>
+                    <div class="card">
+                        <div class="flex-center">
+                            <div class="card-title" style="margin-bottom: 8px; font-size: 16px;">Pinterest</div>
+                            <div class="card-body">Drives the "Shop Similar" e-commerce inspiration engine.</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Conclusion -->
+            <section>
+                <div class="callout">
+                    <div class="callout-title">Strategic Architecture Conclusion</div>
+                    <div class="callout-text">Deploying this multimodal fusion of CLIP and BLIP-2 establishes a state-of-the-art product cataloging pipeline. It eliminates operational bottlenecks and guarantees enterprise-grade scalability, fundamentally transforming how visual data is leveraged for e-commerce discovery.</div>
+                </div>
+            </section>
+        </div>
+
+        <div class="footer">
+            <span>AI-Powered Multimodal Product Understanding System</span>
+            <span>Page 2 of 2</span>
+        </div>
+    </div>
+</body>
+</html>

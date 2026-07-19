@@ -1,0 +1,17 @@
+fastapi
+uvicorn
+opencv-python
+torch
+torchvision
+numpy
+sqlalchemy
+aiosqlite
+pydantic-settings
+twilio
+python-multipart
+python-dotenv
+greenlet
+ultralytics
+psutil
+tensorflow
+keras

@@ -1,0 +1,95 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #020617; /* Slate 950 */
+  --color-foreground: #f8fafc;
+  
+  --color-primary: #0ea5e9; /* Electric Blue */
+  --color-primary-foreground: #ffffff;
+  
+  --color-secondary: #06b6d4; /* Cyan */
+  --color-secondary-foreground: #ffffff;
+  
+  --color-accent: #3b82f6; /* Royal Blue */
+  --color-accent-foreground: #ffffff;
+  
+  --color-success: #10b981; /* Emerald */
+  --color-success-foreground: #ffffff;
+  
+  --color-danger: #ef4444; /* Red */
+  --color-danger-foreground: #ffffff;
+  
+  --color-card: rgba(15, 23, 42, 0.4);
+  --color-border: rgba(14, 165, 233, 0.15);
+}
+
+@layer base {
+  :root {
+    --background: #020617;
+    --foreground: #f8fafc;
+  }
+  
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-feature-settings: "rlig" 1, "calt" 1;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
+  }
+}
+
+@layer utilities {
+  .glass-panel {
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0.6) 0%, rgba(2, 6, 23, 0.8) 100%);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(14, 165, 233, 0.1);
+    box-shadow: 0 4px 24px -1px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  }
+  
+  .glass-panel:hover {
+    border: 1px solid rgba(14, 165, 233, 0.3);
+    box-shadow: 0 8px 32px -1px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255,255,255,0.1), 0 0 15px rgba(14, 165, 233, 0.05);
+  }
+
+  .neon-text-primary {
+    text-shadow: 0 0 10px rgba(14, 165, 233, 0.5), 0 0 20px rgba(14, 165, 233, 0.3);
+  }
+  
+  .neon-text-success {
+    text-shadow: 0 0 10px rgba(16, 185, 129, 0.5), 0 0 20px rgba(16, 185, 129, 0.3);
+  }
+  
+  .neon-text-danger {
+    text-shadow: 0 0 10px rgba(239, 68, 68, 0.5), 0 0 20px rgba(239, 68, 68, 0.3);
+  }
+
+  /* Cyber Grid Background */
+  .bg-cyber-grid {
+    background-size: 40px 40px;
+    background-image: 
+      linear-gradient(to right, rgba(14, 165, 233, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(14, 165, 233, 0.03) 1px, transparent 1px);
+    mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 10%, transparent 100%);
+    -webkit-mask-image: radial-gradient(ellipse 100% 100% at 50% 50%, black 10%, transparent 100%);
+  }
+
+  /* Scanline Effect */
+  .scanline {
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      rgba(14, 165, 233, 0.1) 50%,
+      rgba(14, 165, 233, 0.5) 50%,
+      transparent 100%
+    );
+    background-size: 100% 4px;
+    animation: scan 4s linear infinite;
+  }
+
+  @keyframes scan {
+    0% { transform: translateY(-100%); }
+    100% { transform: translateY(1000%); }
+  }
+}
