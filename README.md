@@ -431,19 +431,31 @@ Distributed under the **MIT License**. See `LICENSE` for more information.
 
 ---
 
-## 📬 24. AUTHOR & CONTACT
+## 👨‍💼 24. Author Section
 
-**Pratik S Kanoj**  
-*Senior Software Engineer / AI Architect*
+**Pratik S Kanoj**
 
-I am a passionate software engineer specializing in building intelligent, scalable, and high-performance AI platforms. I thrive on solving complex engineering problems and delivering enterprise-grade solutions.
+**Artificial Intelligence & Data Science Engineer**
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/pratik-s-kanoj-b8258525b/)
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/PRATIKSK7)
+I am a passionate AI Engineer specializing in Machine Learning, Computer Vision, and full-stack integration. I build robust, production-ready AI systems that solve real-world problems. My expertise lies in taking complex Deep Learning architectures and deploying them into scalable, user-centric web applications.
+
+**Technical Expertise:**
+
+- **AI & Data Science:** Artificial Intelligence, Machine Learning, Deep Learning, Computer Vision, Generative AI, MLOps, Data Science.
+- **Backend & Cloud:** Python, FastAPI, Docker, RESTful APIs.
+- **Frontend:** React, JavaScript, HTML, CSS, Streamlit.
+
+**Connect with me:**
+
+- 💼 **LinkedIn:** [Pratik S Kanoj](https://www.linkedin.com/in/pratik-s-kanoj-a81432300/)
+- 🐙 **GitHub:** [github.com/PRATIKSK7](https://github.com/PRATIKSK7)
+- ✉️ **Email:** [pratiksk0077@gmail.com](mailto:pratiksk0077@gmail.com)
+
+*If you found this project interesting or helpful, please consider giving it a ⭐ on GitHub!*
 
 ---
 
 <div align="center">
   <br/>
-  <h2><i>Built with AI for Public Safety.</i></h2>
+  <p><i>Built with ❤️ using Python, OpenCV, and Deep Learning.</i></p>
 </div>
